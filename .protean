@@ -1,5 +1,10 @@
 protean_build() {
-  go build -ldflags "-linkmode external -extldflags -static" -a whistle-pig.go
+  LATEST_GO_VERSION=$(curl 'https://go.dev/VERSION?m=text')
+  wget "https://go.dev/dl/$LATEST_GO_VERSION.linux-amd64.tar.gz"
+  rm -rf /usr/local/go
+  tar -C /usr/local -xzf $LATEST_GO_VERSION.linux-amd64.tar.gz
+  rm $LATEST_GO_VERSION.linux-amd64.tar.gz
+  /usr/local/go build -ldflags "-linkmode external -extldflags -static" -a whistle-pig.go
   rm -rf .git
 }
 
