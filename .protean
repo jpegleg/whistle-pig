@@ -1,5 +1,5 @@
 protean_build() {
-  go mod init
+  go mod init whistle-pig.go
   go mod tidy
   go build -ldflags "-linkmode external -extldflags -static" -a whistle-pig.go
 }
