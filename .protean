@@ -1,6 +1,4 @@
 protean_build() {
-  go mod init github.com/google/uuid
-  go mod init lukechampine.com/blake3
   go mod tidy
   go build -ldflags "-linkmode external -extldflags -static" -a whistle-pig.go
 }
