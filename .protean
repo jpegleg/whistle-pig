@@ -4,6 +4,8 @@ protean_build() {
   #rm -rf /usr/local/go
   #tar -C /usr/local -xzf $LATEST_GO_VERSION.linux-amd64.tar.gz
   #rm $LATEST_GO_VERSION.linux-amd64.tar.gz
+  /usr/local/go/bin/go get github.com/google/uuid
+  /usr/local/go/bin/go get lukechampine.com/blake3
   /usr/local/go/bin/go build -ldflags "-linkmode external -extldflags -static" -a whistle-pig.go
 }
 
