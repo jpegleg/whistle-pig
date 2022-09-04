@@ -59,13 +59,12 @@ func hashhandler(w http.ResponseWriter, r *http.Request) {
     if err != nil {
         panic(err)
     }
-    encodedString := hex.EncodeToString(buf)
-    valByte := blake3.Sum256([]byte(encodedString))
+    valByte := blake3.Sum256([]byte(buf))
     slice32 := valByte[:]
     encodedB3 := hex.EncodeToString(slice32)
     dt := time.Now()
     fmt.Fprint(w, "\"{'status': 'BLAKE3 256 trunc hash', 'type': 'http body', 'b3o256': '", encodedB3, "'}\"")
-    fmt.Println(dt.String(), "resource accessed", clienta, r.URL.Path[1:], "http body recv as hex: ", encodedString, "BLAKE3 truncated to 256 bytes as hex: ", encodedB3)
+    fmt.Println(dt.String(), "resource accessed", clienta, r.URL.Path[1:], "BLAKE3 truncated to 256 bytes as hex: ", encodedB3)
 }
 
 func main() {
