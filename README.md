@@ -1,4 +1,4 @@
-# whistle-pig
+# whistle-pig 🐿️
 
 A generic HTTP server in go with raw upload, uid, and BLAKE3 features.
 This is a template for microservices written in the go language.
