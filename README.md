@@ -12,11 +12,12 @@ WARNING: <b>The default settings allow unlimited data transfer over plain HTTP</
 Both the /api/v0/uploadbody and /api/v0/hashbody store the entire HTTP BODY in the whistle-pig STDOUT log in hex. The hashbody fuction returns a JSON with a BLAKE3 hash, storing the hash and the body on the server as hex, while return a success message JSON, storing the entire body on the server as hex.
 
 ```
-$ time curl -X POST --data-binary @/usr/bin/grep myserverplace:8088/api/v0/hashbody
-"{'status': 'BLAKE3 256 trunc hash', 'type': 'http body', 'b3o256': 'bf592f6a20f5469dec341d1e7d5883c57d3a0978e9030ba3bed7c51ce028a6cc'}"
-real    0m0.009s
-user    0m0.007s
-sys     0m0.000s
+$ time curl -X POST --data "my data" -E auth.pem -k https://whistle-pig-server.local:8089/api/v1/hashbody256
+b2167b0aa7ef7794740b055ac7a880a52934aa67ef1ca6887ad81dccefd5b9de
+real    0m0.027s
+user    0m0.011s
+sys     0m0.001s
+
 
 ```
 
@@ -106,13 +107,12 @@ func hashhandler(w http.ResponseWriter, r *http.Request) {
     if err != nil {
         panic(err)
     }
-    encodedString := hex.EncodeToString(buf)
-    valByte := blake3.Sum256([]byte(encodedString))
+    valByte := blake3.Sum256([]byte(buf))
     slice32 := valByte[:]
     encodedB3 := hex.EncodeToString(slice32)
     dt := time.Now()
     fmt.Fprint(w, "\"{'status': 'BLAKE3 256 trunc hash', 'type': 'http body', 'b3o256': '", encodedB3, "'}\"")
-    fmt.Println(dt.String(), "resource accessed", clienta, r.URL.Path[1:], "http body recv as hex: ", encodedString, "BLAKE3 truncated to 256 bytes as hex: ", encodedB3)
+    fmt.Println(dt.String(), "resource accessed", clienta, r.URL.Path[1:], "BLAKE3 truncated to 256 bytes as hex: ", encodedB3)
 }
 
 func main() {
@@ -133,7 +133,7 @@ func main() {
         Addr:           ":8088",
         //ReadTimeout:    10 * time.Second,
         //WriteTimeout:   10 * time.Second,
-        //MaxHeaderBytes: 1 << 32,
+        //MaxHeaderBytes: int
         TLSConfig: &tls.Config{
           MinVersion:               tls.VersionTLS13,
           PreferServerCipherSuites: true,
@@ -214,13 +214,12 @@ func hashhandler(w http.ResponseWriter, r *http.Request) {
     if err != nil {
         panic(err)
     }
-    encodedString := hex.EncodeToString(buf)
-    valByte := blake3.Sum256([]byte(encodedString))
+    valByte := blake3.Sum256([]byte(buf))
     slice32 := valByte[:]
     encodedB3 := hex.EncodeToString(slice32)
     dt := time.Now()
     fmt.Fprint(w, "\"{'status': 'BLAKE3 256 trunc hash', 'type': 'http body', 'b3o256': '", encodedB3, "'}\"")
-    fmt.Println(dt.String(), "resource accessed", clienta, r.URL.Path[1:], "http body recv as hex: ", encodedString, "BLAKE3 truncated to 256 bytes as hex: ", encodedB3)
+    fmt.Println(dt.String(), "resource accessed", clienta, r.URL.Path[1:], "BLAKE3 truncated to 256 bytes as hex: ", encodedB3)
 }
 
 func main() {
@@ -249,7 +248,7 @@ func main() {
         Addr:           ":8088",
         //ReadTimeout:    10 * time.Second,
         //WriteTimeout:   10 * time.Second,
-        //MaxHeaderBytes: 1 << 32,
+        //MaxHeaderBytes: int
         TLSConfig: &tls.Config{
           MinVersion:               tls.VersionTLS13,
           PreferServerCipherSuites: true,
