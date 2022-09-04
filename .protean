@@ -6,7 +6,7 @@ protean_build() {
 
 protean_test() {
   docker-compose up -d
-  curl localhost:8088/api/v0/health | grep "{'server': 'API HEALTHY v0'}" || exit 1
-  curl -X POST --data "test payload hash" localhost:8088/api/v0/hashbody | grep 0ec6cf1ab39a1adb6a27307c5f602ac0f66926b5ed181944541c8f9c806a8c1c || exit 1
+  curl -k https://localhost:8088/api/v0/health | grep "{'server': 'API HEALTHY v0'}" || exit 1
+  curl -k -X POST --data "test payload hash" https://localhost:8088/api/v0/hashbody | grep 0ec6cf1ab39a1adb6a27307c5f602ac0f66926b5ed181944541c8f9c806a8c1c || exit 1
   trivy image "localhost:5000/whistle-pig:test" > ../whistle-pig_trivy-report_$(date +%Y%m%d%H%M%S).txt
 }
