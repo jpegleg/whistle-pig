@@ -3,10 +3,8 @@ import (
     "fmt"
     "io"
     "net/http"
-    "crypto/tls"
     "encoding/hex"
     "time"
-    "flag"
     "github.com/google/uuid"
     "lukechampine.com/blake3"
 )
@@ -71,10 +69,6 @@ func hashhandler(w http.ResponseWriter, r *http.Request) {
 }
 
 func main() {
-    certFile := flag.String("certfile", "cert.pem", "certificate PEM file")
-    keyFile := flag.String("keyfile", "key.pem", "key PEM file")
-    flag.Parse()
-
     http.HandleFunc("/", verjsonhandler)
 
     http.HandleFunc("/uid", uidhandler)
@@ -89,10 +83,6 @@ func main() {
         //ReadTimeout:    10 * time.Second,
         //WriteTimeout:   10 * time.Second,
         //MaxHeaderBytes: 1 << 32,
-        TLSConfig: &tls.Config{
-          MinVersion:               tls.VersionTLS13,
-          PreferServerCipherSuites: true,
-      },
     }
-    s.ListenAndServeTLS(*certFile, *keyFile)
+    s.ListenAndServe()
 }
